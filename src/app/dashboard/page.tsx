@@ -14,8 +14,14 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'all' | 'currently_reading' | 'read' | 'unfinished'>('all');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [addModalInitialStatus, setAddModalInitialStatus] = useState<'currently_reading' | 'read' | 'unfinished'>('read');
   const [editingBook, setEditingBook] = useState<Book | null>(null);
   const router = useRouter();
+
+  const openAddModal = (initialStatus: 'currently_reading' | 'read' | 'unfinished' = 'read') => {
+    setAddModalInitialStatus(initialStatus);
+    setIsAddModalOpen(true);
+  };
 
   const fetchUserAndBooks = async () => {
     try {
@@ -124,7 +130,7 @@ export default function DashboardPage() {
 
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <button
-            onClick={() => setIsAddModalOpen(true)}
+            onClick={() => openAddModal('read')}
             className="btn btn-primary"
             style={{ padding: '0.6rem 1.2rem' }}
           >
@@ -162,7 +168,7 @@ export default function DashboardPage() {
         </div>
 
         <button
-          onClick={() => setIsAddModalOpen(true)}
+          onClick={() => openAddModal('currently_reading')}
           className="btn btn-secondary btn-sm"
           disabled={currentlyReadingBooks.length >= 4}
         >
@@ -214,7 +220,7 @@ export default function DashboardPage() {
           <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
             Start building your reading list by searching and adding books.
           </p>
-          <button onClick={() => setIsAddModalOpen(true)} className="btn btn-primary btn-sm">
+          <button onClick={() => openAddModal('read')} className="btn btn-primary btn-sm">
             + Add Your First Book
           </button>
         </div>
@@ -243,6 +249,7 @@ export default function DashboardPage() {
         onClose={() => setIsAddModalOpen(false)}
         onSuccess={fetchUserAndBooks}
         currentReadingCount={currentlyReadingBooks.length}
+        initialStatus={addModalInitialStatus}
       />
 
       {/* Edit Book Modal */}

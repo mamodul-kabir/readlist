@@ -8,9 +8,10 @@ interface AddBookModalProps {
   onClose: () => void;
   onSuccess: () => void;
   currentReadingCount: number;
+  initialStatus?: 'currently_reading' | 'read' | 'unfinished';
 }
 
-export default function AddBookModal({ isOpen, onClose, onSuccess, currentReadingCount }: AddBookModalProps) {
+export default function AddBookModal({ isOpen, onClose, onSuccess, currentReadingCount, initialStatus = 'read' }: AddBookModalProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<GoogleBookSearchResult[]>([]);
   const [searching, setSearching] = useState(false);
@@ -21,7 +22,7 @@ export default function AddBookModal({ isOpen, onClose, onSuccess, currentReadin
   const [authors, setAuthors] = useState('');
   const [coverUrl, setCoverUrl] = useState('');
   const [googleSearchUrl, setGoogleSearchUrl] = useState('');
-  const [status, setStatus] = useState<'currently_reading' | 'read' | 'unfinished'>('currently_reading');
+  const [status, setStatus] = useState<'currently_reading' | 'read' | 'unfinished'>(initialStatus);
   const [startDate, setStartDate] = useState('');
   const [finishDate, setFinishDate] = useState('');
   const [year, setYear] = useState(new Date().getFullYear().toString());
@@ -39,7 +40,7 @@ export default function AddBookModal({ isOpen, onClose, onSuccess, currentReadin
     setAuthors('');
     setCoverUrl('');
     setGoogleSearchUrl('');
-    setStatus('currently_reading');
+    setStatus(initialStatus);
     setStartDate('');
     setFinishDate('');
     setYear(new Date().getFullYear().toString());
@@ -57,8 +58,10 @@ export default function AddBookModal({ isOpen, onClose, onSuccess, currentReadin
   useEffect(() => {
     if (!isOpen) {
       resetForm();
+    } else {
+      setStatus(initialStatus);
     }
-  }, [isOpen]);
+  }, [isOpen, initialStatus]);
 
   // Debounced search with abort controller
   useEffect(() => {
